@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-agent
+  namespace: otel
+  labels:
+    app: opentelemetry
+    component: otel-agent
+    type: headless
+spec:
+  clusterIP: None
+  selector:
+    app: opentelemetry
+    component: otel-agent
+  ports:
+    - name: pprof
+      protocol: TCP
+      port: 1777
+      targetPort: 1777
+    - name: zpages
+      protocol: TCP
+      port: 55679
+      targetPort: 55679
+    - name: health-check
+      protocol: TCP
+      port: 13133
+      targetPort: 13133
+    - name: metrics
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+    - name: opencensus-receiver
+      protocol: TCP
+      port: 55678
+      targetPort: 55678
+    - name: jaeger-receiver
+      protocol: TCP
+      port: 14268
+      targetPort: 14268
+    - name: zipkin-receiver
+      protocol: TCP
+      port: 9411
+      targetPort: 9411

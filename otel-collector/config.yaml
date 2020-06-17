@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector
+  namespace: otel
+  labels:
+    app: opentelemetry
+    component: otel-collector
+data:
+  otel-collector-config: |
+    receivers:
+      opencensus:
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+        namespace: load-generator-metrics
+        const_labels:
+          app: load-generator
+      logging:
+      zipkin:
+        url: "http://zipkin-all-in-one.otel.svc.cluster.local:9411/api/v2/spans"
+        format: proto
+      jaeger:
+        endpoint: jaeger-all-in-one.svc.cluster.local:14250
+        insecure: true
+      # Alternatively, use jaeger_thrift_http with the settings below. In this case
+      # update the list of exporters on the traces pipeline.
+      #
+      #  jaeger_thrift_http:
+      #    url: http://jaeger-all-in-one.otel.svc.cluster.local:14268/api/traces
+    processors:
+      batch:
+      queued_retry:
+    extensions:
+      health_check:
+      pprof:
+        endpoint: :1888
+      zpages:
+        endpoint: :55679
+    service:
+      extensions: [pprof, zpages, health_check]
+      pipelines:
+        traces:
+          receivers: [opencensus]
+          exporters: [logging, zipkin, jaeger]
+          processors: [batch, queued_retry]
+        metrics:
+          receivers: [opencensus]
+          exporters: [logging,prometheus]

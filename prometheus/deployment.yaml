@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: otel
+  labels:
+    app: opentelemetry
+    component: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry
+      component: prometheus
+  minReadySeconds: 5
+  progressDeadlineSeconds: 120
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: opentelemetry
+        component: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: prometheus-config-vol
+          mountPath: /etc/prometheus
+      volumes:
+        - name: prometheus-config-vol
+          configMap:
+            name: prometheus
+            items:
+              - key: prometheus
+                path: prometheus.yml

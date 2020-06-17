@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-load-generator
+  namespace: otel
+  labels:
+    app: opentelemetry
+    component: load-generator
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry
+      component: load-generator
+  template:
+    metadata:
+      labels:
+        app: opentelemetry
+        component: load-generator
+    spec:
+      containers:
+      - name: opencensus-load-generator
+        image: golang:1.12.7
+        env:
+        - name: GO111MODULE
+          value: "on"
+        - name: OTEL_AGENT_ENDPOINT
+          value: "otel-agent..otel.svc.cluster.local:55678"
+        volumeMounts:
+        - name: load-generator-function-vol
+          mountPath: /usr/src
+        command:
+        - bash
+        - -c
+        - go run /usr/src/main.go
+      - name: prom-avalanche
+        image: quay.io/freshtracks.io/avalanche:latest
+        args:
+        - "--metric-count=1000"
+        - "--series-count=50"
+        - "--port=9001"
+        ports:
+        - containerPort: 9001
+      - name: jaeger-emitter
+        image: omnition/synthetic-load-generator:1.0.25
+        env:
+        - name: JAEGER_COLLECTOR_URL
+          value: http://otel-agent.otel.svc.cluster.local:14268
+      - name: zipkin-emitter
+        image: omnition/synthetic-load-generator:1.0.25
+        env:
+        - name: ZIPKINV2_JSON_URL
+          value: http://otel-agent.otel.svc.cluster.local:9411/api/v2/spans
+      volumes:
+        - name: load-generator-function-vol
+          configMap:
+            name: load-generator-function
+            items:
+            - key: main
+              path: main.go

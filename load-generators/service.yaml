@@ -1,0 +1,17 @@
+#create service avalanche-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-generator
+  namespace: otel
+  labels:
+    app: load-generator
+spec:
+  type: ClusterIP
+  selector:
+    app: opentelemetry
+    component: load-generator
+  ports:
+    - name: avalanche
+      port: 9001
+      targetPort: 9001

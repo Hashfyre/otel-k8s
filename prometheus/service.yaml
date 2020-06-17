@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: otel
+  labels:
+    app: opentelemetry
+    component: prometheus
+spec:
+  selector:
+    component: prometheus
+  ports:
+    - name: prometheus
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
