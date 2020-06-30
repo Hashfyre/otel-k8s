@@ -11,7 +11,7 @@ data:
     receivers:
       opencensus:
       zipkin:
-        endpoint: :9411
+        endpoint: 0.0.0.0:9411
       jaeger:
         protocols:
           thrift_http:
