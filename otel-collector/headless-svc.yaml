@@ -8,6 +8,7 @@ metadata:
     app: opentelemetry
     component: otel-collector
 spec:
+  clusterIP: None  
   selector:
     component: otel-collector
   ports:
