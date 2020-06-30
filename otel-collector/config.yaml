@@ -10,12 +10,13 @@ data:
   otel-collector-config: |
     receivers:
       opencensus:
+        endpoint: 0.0.0.0:55678
     exporters:
       prometheus:
         endpoint: "0.0.0.0:8889"
-        namespace: load-generator-metrics
-        const_labels:
-          app: load-generator
+        # namespace: load-generator-metrics
+        # const_labels:
+        #   app: load-generator
       logging:
       zipkin:
         url: "http://zipkin-all-in-one.otel.svc.cluster.local:9411/api/v2/spans"
