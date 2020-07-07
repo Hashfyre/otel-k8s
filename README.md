@@ -120,7 +120,7 @@ Mostly inspired from https://github.com/open-telemetry/opentelemetry-collector/b
                                       |   jaeger-all-in-one  |  |  zipkin-all-in-one    |    |     prometheus         |                                                
                                       +----------------------+  +-----------------------+    +------------------------+                                                
 
-# Deployment
+## Deployment
 ```
 kubectl apply -f load-generator/*
 kubectl apply -f otel-agent/*
