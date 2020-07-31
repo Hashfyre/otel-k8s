@@ -22,6 +22,10 @@ data:
               scrape_interval: 3s
               static_configs:
                 - targets: ['load-generator.otel.svc.cluster.local:9001']
+            - job_name: 'otel_agent'
+              scrape_interval: 3s
+              static_configs:
+                - targets: ['otel-agent.otel.svc.cluster.local:8888']
     exporters:
       opencensus:
         endpoint: "otel-collector.otel.svc.cluster.local:55678"

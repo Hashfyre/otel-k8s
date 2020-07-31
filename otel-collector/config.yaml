@@ -32,6 +32,28 @@ data:
     processors:
       batch:
       queued_retry:
+      tail_sampling:
+        decision_wait: 10s
+        num_traces: 100
+        expected_new_traces_per_sec: 10
+        policies:
+          [
+            {
+              name: sampleNoErrors,
+              type: numeric_attribute,
+              numeric_attribute: {key: status.code, min_value: 0, max_value: 0}
+            },
+            {
+              name: sample200,
+              type: string_attribute,
+              string_attribute: {key: http.status_code, values: ["200"]}
+            },
+            {
+              name: ratelimit35,
+              type: rate_limiting,
+              rate_limiting: {spans_per_second: 35}
+           }
+          ]
     extensions:
       health_check:
       pprof:
